@@ -1,0 +1,36 @@
+---
+// Two equal halves: district, full address, hours, route in Google Maps, call. R-UX-7.
+import { locations, mainPhone, hours } from "../data/site";
+---
+<section id="locations" class="section locations" data-rec="R-UX-7,S-R008" aria-labelledby="loc-title">
+  <div class="container">
+    <h2 id="loc-title" class="h2 locations__title">Дві точки в Києві</h2>
+    <ul class="locs" role="list">
+      {locations.map((l) => (
+        <li class="loc">
+          <h3 class="loc__name">{l.district}</h3>
+          <p class="loc__addr">{l.street}<br />Київ</p>
+          <p class="loc__hours"><span>{hours.work}</span><span class="muted">{hours.calls}</span></p>
+          <div class="loc__actions">
+            <a class="btn btn--primary" href={l.map} target="_blank" rel="noopener noreferrer">Маршрут у Google Maps<span class="visually-hidden"> (відкриється в новій вкладці)</span></a>
+            <a class="btn btn--outline" href={`tel:${mainPhone.tel}`}>Подзвонити</a>
+          </div>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .locations__title { margin-bottom: var(--space-6); }
+  .locs { display: grid; gap: var(--gutter); margin: 0; padding: 0; list-style: none; }
+  .loc { display: grid; gap: var(--space-4); align-content: start; padding: var(--space-5); background: var(--color-surface); border-radius: var(--radius); }
+  .loc__name { font-size: clamp(3rem, 2rem + 4vw, 5.5rem); }
+  .loc__addr { margin: 0; font-size: var(--fs-lead); line-height: 1.35; font-weight: 600; }
+  .loc__hours { margin: 0; display: grid; gap: var(--space-1); }
+  .loc__actions { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-top: var(--space-2); }
+  @media (min-width: 48em) {
+    .locs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .loc { padding: var(--space-6); }
+  }
+</style>

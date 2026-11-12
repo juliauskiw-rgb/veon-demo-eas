@@ -1,0 +1,109 @@
+---
+// Price scale 0–500 грн: five diagnostics stand on their real «від» prices. The free promo is set apart (R-UX-9).
+import FutureLink from "./FutureLink.astro";
+import { diagnostics, mainPhone, futureNote } from "../data/site";
+const MAX = 500;
+const ticks = [0, 100, 200, 300, 400, 500];
+---
+<section id="diagnostics" class="section diag" aria-labelledby="diag-title">
+  <div class="container diag__grid">
+    <div class="diag__head">
+      <h2 id="diag-title" class="h2">Діагностика від 150 до 500&nbsp;грн</h2>
+      <p class="lead muted">Ціни «від» видно ще до дзвінка.</p>
+    </div>
+
+    <div class="scale" data-reveal>
+      <ol class="scale__rows" role="list">
+        {diagnostics.map((raw, i) => { const d = { ...raw, promo: raw.name === "Комплексна діагностика" }; return (
+          <li id={d.price === 500 ? "pre-purchase" : undefined} class:list={["scale__row", { "scale__row--end": d.price / MAX > 0.6, "scale__row--promo": d.promo }]} style={`--p:${(d.price / MAX) * 100};--i:${i}`}>
+            <span class="scale__mark">
+              <span class="scale__body">
+                <span class="scale__price">від {d.price}&nbsp;грн</span>
+                <span class="scale__name">{d.name}</span>
+              </span>
+            </span>
+            {d.promo && (
+              <aside class="promo" data-rec="R-UX-9" aria-labelledby="promo-title">
+                <h3 id="promo-title" class="promo__title">Акція: безкоштовна комплексна діагностика</h3>
+                <p class="promo__note">Умови акції уточнюйте за телефоном.</p>
+              </aside>
+            )}
+          </li>
+        );})}
+      </ol>
+      <div class="scale__axis" aria-hidden="true">
+        {ticks.map((t) => <span class="scale__tick" data-t={t} style={`--p:${(t / MAX) * 100}`}></span>)}
+      </div>
+    </div>
+
+    <div class="diag__cta">
+      <a class="btn btn--primary" href={`tel:${mainPhone.tel}`}>Подзвонити та записатись</a>
+      <FutureLink note={futureNote}>Усі ціни на діагностику</FutureLink>
+    </div>
+  </div>
+</section>
+
+<style>
+  .diag { padding-top: var(--space-6); }
+  .diag__grid { display: grid; gap: var(--space-6); }
+  .diag__head { display: grid; gap: var(--space-4); align-content: start; }
+  .diag__head .lead { margin: 0; }
+
+  /* Phone: a vertical rail, prices large. Final positions are the default state (no JS, before the animation). */
+  .scale__rows { margin: 0; padding: 0 0 0 var(--space-5); list-style: none; border-left: 2px solid var(--color-text); display: grid; gap: var(--space-5); }
+  .scale__row { position: relative; scroll-margin-top: var(--space-8); }
+  .scale__row::before { content: ""; position: absolute; left: calc(-1 * var(--space-5) - 7px); top: 10px; width: 12px; height: 12px; border-radius: 50%; background: var(--color-accent); }
+  .scale__body { display: grid; gap: var(--space-1); }
+  .scale__price { font-family: var(--font-display); font-weight: 800; font-size: clamp(2rem, 1.4rem + 2.4vw, 3.5rem); line-height: 1; font-variant-numeric: tabular-nums; }
+  .scale__name { font-size: var(--fs-body); color: var(--color-muted); }
+  .scale__axis { display: none; }
+
+  /* Entering the screen: one class from reveal.ts starts the motion; reduced motion has none */
+  @media (prefers-reduced-motion: no-preference) {
+    :global(.js) .scale.is-visible .scale__row { animation: row-in 300ms var(--ease-out) both; animation-delay: calc(var(--i) * 50ms); }
+    @keyframes row-in { from { opacity: 0; } to { opacity: 1; } }
+  }
+
+  .promo { position: relative; display: grid; gap: var(--space-2); align-content: start; margin-top: var(--space-4); padding: var(--space-5); background: var(--color-surface); border: 2px solid var(--color-accent); border-radius: var(--radius); }
+  .promo__title { font-size: var(--fs-h3); }
+  .promo__note { margin: 0; color: var(--color-muted); }
+
+  .diag__cta { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-4) var(--space-6); }
+
+  /* Tablet and up: a horizontal price axis */
+  @media (min-width: 48em) {
+    .scale__rows { padding: 0; border: 0; gap: 0; }
+    .scale__row { height: 112px; overflow: clip; border-bottom: 1px solid var(--color-hairline); }
+    .scale__row::before { display: none; }
+    .scale__mark { position: absolute; top: 0; left: 0; right: 0; height: 112px; transform: translateX(calc(var(--p) * 1%)); }
+    .scale__price { font-size: clamp(2rem, 1rem + 2vw, 3rem); }
+    .scale__mark::before { content: ""; position: absolute; left: -1px; top: var(--space-3); bottom: 0; width: 3px; background: var(--color-accent); }
+    .scale__body { position: absolute; left: var(--space-3); top: var(--space-3); white-space: nowrap; }
+    .scale__row--end .scale__mark::before { left: -3px; }
+    .scale__row--end .scale__body { left: auto; right: calc(100% + var(--space-3)); text-align: right; }
+    .scale__row--promo { height: auto; overflow: visible; padding-bottom: var(--space-4); }
+    .promo { margin-top: 112px; }
+    .scale__axis { display: block; position: relative; height: 32px; margin-top: var(--space-2); border-top: 2px solid var(--color-text); font-size: var(--fs-small); color: var(--color-muted); font-variant-numeric: tabular-nums; }
+    .scale__tick { position: absolute; top: var(--space-2); left: calc(var(--p) * 1%); transform: translateX(-50%); }
+    .scale__tick:first-child { transform: none; }
+    .scale__tick:last-child { transform: translateX(-100%); }
+    .scale__tick::after { content: attr(data-t); }
+
+    /* Marks travel along the axis from 0 to their price, staggered, once on entering the screen */
+    @media (prefers-reduced-motion: no-preference) {
+      :global(.js) .scale.is-visible .scale__mark { animation: mark-travel 600ms var(--ease-out) both; animation-delay: calc(var(--i) * 50ms); }
+      @keyframes mark-travel { from { transform: translateX(0); } to { transform: translateX(calc(var(--p) * 1%)); } }
+    }
+  }
+  @media (min-width: 64em) {
+    .diag__grid { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gutter); row-gap: var(--space-6); }
+    .diag__head { grid-column: 1 / span 7; }
+    .scale { grid-column: 1 / span 8; }
+    /* The promo card stands next to the «Комплексна діагностика» row, tied to it by a short accent rule */
+    .scale__row--promo { height: 112px; padding: 0; }
+    .promo { position: absolute; top: var(--space-3); left: calc(100% + var(--gutter)); width: calc(50% - var(--gutter) / 2); margin: 0; }
+    .promo::before { content: ""; position: absolute; right: 100%; top: var(--space-5); width: var(--gutter); height: 2px; background: var(--color-accent); }
+    .promo__title { font-size: clamp(1.5rem, 1rem + 1vw, 2rem); }
+    .diag__cta { grid-column: 1 / -1; }
+  }
+</style>

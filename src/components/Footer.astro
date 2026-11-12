@@ -1,0 +1,66 @@
+---
+// Light footer, 4 columns: brand, phones, addresses with maps, hours and language. Policy and RU are future pages.
+import FutureLink from "./FutureLink.astro";
+import { brand, phones, locations, hours, futureNote } from "../data/site";
+const logo = `${import.meta.env.BASE_URL.replace(/\/?$/, "/")}logo.png`;
+---
+<footer id="footer" class="ftr">
+  <div class="container ftr__grid">
+    <div class="ftr__brand">
+      <a class="ftr__logo" href="#top" aria-label={`${brand.name}, на початок сторінки`}>
+        <img src={logo} alt="" width="106" height="40" decoding="async" />
+      </a>
+      <p>{brand.tagline}</p>
+    </div>
+
+    <div>
+      <h2 class="ftr__h">Телефони</h2>
+      <ul class="ftr__list" role="list">
+        {phones.map((p) => <li><a class="ftr__link" href={`tel:${p.tel}`}><span class="num">{p.display}</span> <span class="muted">{p.operator}</span></a></li>)}
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="ftr__h">Адреси</h2>
+      <ul class="ftr__list" role="list">
+        {locations.map((l) => (
+          <li><a class="ftr__link" href={l.map} target="_blank" rel="noopener noreferrer">{l.district}, {l.street}<span class="visually-hidden"> (Google Maps, нова вкладка)</span></a></li>
+        ))}
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="ftr__h">Години</h2>
+      <p class="ftr__p">{hours.work}<br />{hours.calls}</p>
+      <div class="ftr__lang">
+        <span aria-current="true">UK</span>
+        <span aria-hidden="true">/</span>
+        <FutureLink note={futureNote}><span lang="ru">RU</span></FutureLink>
+      </div>
+    </div>
+  </div>
+  <div class="container ftr__base">
+    <FutureLink note={futureNote}>Політика конфіденційності</FutureLink>
+  </div>
+</footer>
+
+<style>
+  .ftr { background: var(--color-surface-2); padding-block: var(--space-7) var(--space-6); font-size: var(--fs-small); }
+  .ftr__grid { display: grid; gap: var(--space-6); }
+  .ftr__brand { display: grid; gap: var(--space-4); justify-items: start; }
+  .ftr__brand p { margin: 0; max-width: 28ch; }
+  .ftr__logo { display: inline-flex; border-radius: var(--radius); }
+  .ftr__logo:hover img { opacity: .88; }
+  .ftr__logo:active img { transform: translateY(1px); }
+  .ftr__h { font-family: var(--font-body); font-weight: 600; font-size: var(--fs-small); letter-spacing: 0; color: var(--color-muted); margin-bottom: var(--space-3); }
+  .ftr__list { margin: 0; padding: 0; list-style: none; display: grid; }
+  .ftr__link { display: inline-flex; flex-wrap: wrap; gap: 0 var(--space-2); align-items: center; min-height: 44px; text-decoration: none; font-size: var(--fs-body); transition: color var(--dur-hover) var(--ease-out); }
+  .ftr__link .muted { font-size: var(--fs-small); }
+  .ftr__link:hover { color: var(--color-accent); text-decoration: underline; text-underline-offset: 4px; }
+  .ftr__link:active { color: var(--color-accent-hover); }
+  .ftr__p { margin: 0; font-size: var(--fs-body); }
+  .ftr__lang { display: flex; gap: var(--space-2); align-items: center; margin-top: var(--space-4); font-weight: 600; }
+  .ftr__base { margin-top: var(--space-7); padding-top: var(--space-5); border-top: 1px solid var(--color-hairline); }
+  @media (min-width: 48em) { .ftr__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (min-width: 64em) { .ftr__grid { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1.2fr) minmax(0, 1fr); gap: var(--gutter); } }
+</style>

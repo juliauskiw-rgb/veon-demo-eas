@@ -1,0 +1,98 @@
+---
+// Day scale 0–24 h: workshop 9–19, calls 19–22, a live «now» mark in Kyiv time (only with JS). Four numbers. R-UX-2.
+import { phones } from "../data/site";
+const hoursMarks = [0, 6, 12, 18, 24];
+---
+<section id="booking" class="section booking" aria-labelledby="booking-title">
+  <div class="container booking__grid">
+    <div class="booking__head">
+      <h2 id="booking-title" class="h2">Лише за попереднім записом</h2>
+      <p class="lead">Телефонуйте, узгоджуємо день і час, і приїжджайте на Оболонь або Дарницю.</p>
+    </div>
+
+    <figure class="day" data-reveal>
+      <figcaption class="visually-hidden">Розклад на добу: СТО працює з 9:00 до 19:00, дзвінки приймаємо до 22:00, щодня.</figcaption>
+      <div class="day__track" aria-hidden="true">
+        <span class="day__seg day__seg--work"></span>
+        <span class="day__seg day__seg--calls"></span>
+        <span class="day__now" data-now hidden><span class="day__now-label" data-now-label></span></span>
+      </div>
+      <div class="day__axis" aria-hidden="true">
+        {hoursMarks.map((h) => <span class="day__tick" style={`--p:${(h / 24) * 100}`}>{h}:00</span>)}
+      </div>
+      <dl class="day__legend">
+        <div class="day__key day__key--work"><dt>СТО працює</dt><dd>9:00–19:00, щодня</dd></div>
+        <div class="day__key day__key--calls"><dt>Приймаємо дзвінки</dt><dd>до 22:00, щодня</dd></div>
+      </dl>
+    </figure>
+
+    <div class="booking__phones">
+      <h3 class="booking__sub">Номери для запису</h3>
+      <ul class="nums" role="list" data-rec="R-UX-2">
+        {phones.map((p) => (
+          <li><a class="nums__link" href={`tel:${p.tel}`}><span class="nums__num num">{p.display}</span><span class="nums__op">{p.operator}</span></a></li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .booking__grid { display: grid; gap: var(--space-6); }
+  .booking__head { display: grid; gap: var(--space-4); align-content: start; }
+  .booking__head .lead { margin: 0; }
+
+  .day { margin: 0; }
+  :global(.js) .day[data-reveal]:not(.is-visible) { opacity: 1; transform: none; }
+  .day__track { position: relative; height: 56px; background: var(--color-surface); border-radius: var(--radius); }
+  .day__seg { position: absolute; top: 0; bottom: 0; transform-origin: left center; }
+  .day__seg--work { left: calc(9 / 24 * 100%); width: calc(10 / 24 * 100%); background: var(--color-accent); }
+  .day__seg--calls { left: calc(19 / 24 * 100%); width: calc(3 / 24 * 100%); background: var(--color-accent-soft); }
+  .day__now { position: absolute; top: -8px; bottom: -8px; left: calc(var(--now, 0) * 1%); width: 3px; margin-left: -1px; background: var(--color-text); }
+  .day__now[hidden] { display: none; }
+  .day__now-label { position: absolute; bottom: calc(100% + var(--space-1)); left: 50%; transform: translateX(-50%); white-space: nowrap; font-size: var(--fs-small); font-weight: 600; font-variant-numeric: tabular-nums; }
+  .day__now[data-edge="start"] .day__now-label { left: 0; transform: none; }
+  .day__now[data-edge="end"] .day__now-label { left: auto; right: 0; transform: none; }
+  .day__axis { position: relative; height: 32px; font-size: var(--fs-small); color: var(--color-muted); font-variant-numeric: tabular-nums; }
+  .day__tick { position: absolute; top: var(--space-2); left: calc(var(--p) * 1%); transform: translateX(-50%); }
+  .day__tick:first-child { transform: none; }
+  .day__tick:last-child { transform: translateX(-100%); }
+  .day { padding-top: var(--space-6); }
+  .day__legend { display: grid; gap: var(--space-4); margin: var(--space-5) 0 0; }
+  .day__key { display: grid; grid-template-columns: 24px 1fr; column-gap: var(--space-3); align-items: baseline; }
+  .day__key::before { content: ""; grid-row: 1 / span 2; width: 24px; height: 16px; border-radius: 2px; align-self: center; }
+  .day__key--work::before { background: var(--color-accent); }
+  .day__key--calls::before { background: var(--color-accent-soft); }
+  .day__key dt { font-weight: 600; }
+  .day__key dd { margin: 0; color: var(--color-muted); font-variant-numeric: tabular-nums; }
+
+  /* Effect 3: segments grow from the left, then the «now» mark appears */
+  .day .day__seg { transition: transform 500ms var(--ease-out); }
+  .day .day__seg--calls { transition-delay: 250ms; }
+  .day .day__now { transition: opacity 300ms var(--ease-out) 600ms; }
+  :global(.js) .day:not(.is-visible) .day__seg { transform: scaleX(0); }
+  :global(.js) .day:not(.is-visible) .day__now { opacity: 0; }
+
+  .booking__sub { font-family: var(--font-body); font-weight: 600; font-size: var(--fs-body); letter-spacing: 0; color: var(--color-muted); margin-bottom: var(--space-2); }
+  .nums { margin: 0; padding: 0; list-style: none; }
+  .nums li { border-top: 1px solid var(--color-hairline); }
+  .nums__link { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: var(--space-1) var(--space-4); min-height: var(--tap); padding: var(--space-3) 0; text-decoration: none; transition: color var(--dur-hover) var(--ease-out); }
+  .nums__num { font-variant-numeric: tabular-nums; font-family: var(--font-display); font-weight: 800; font-size: clamp(2rem, 1.4rem + 2.4vw, 3rem); line-height: 1; }
+  .nums__op { color: var(--color-muted); }
+  .nums__link:hover { color: var(--color-accent); }
+  .nums__link:active { color: var(--color-accent-hover); }
+
+  @media (min-width: 64em) {
+    .booking__grid { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gutter); row-gap: var(--space-7); }
+    .booking__head { grid-column: 1 / span 6; grid-row: 1; }
+    .booking__phones { grid-column: 8 / span 5; grid-row: 1; }
+    .day { grid-column: 1 / -1; grid-row: 2; }
+    .day__legend { grid-template-columns: repeat(2, max-content); column-gap: var(--space-7); }
+    .day .day__seg { transition-duration: 700ms; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    :global(.js) .day:not(.is-visible) .day__seg { transform: none; }
+    :global(.js) .day:not(.is-visible) .day__now { opacity: 1; }
+    .day .day__seg, .day .day__now { transition: none; }
+  }
+</style>

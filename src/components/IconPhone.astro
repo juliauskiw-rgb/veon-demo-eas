@@ -1,0 +1,8 @@
+---
+// Handset icon (custom SVG), decorative: the label next to it says what the control does.
+interface Props { size?: number; }
+const { size = 20 } = Astro.props;
+---
+<svg class="icon" width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+  <path d="M6.6 3.5h3l1.5 4-2 1.3a11 11 0 0 0 6.1 6.1l1.3-2 4 1.5v3a2 2 0 0 1-2.2 2A16.5 16.5 0 0 1 4.6 5.7 2 2 0 0 1 6.6 3.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+</svg>

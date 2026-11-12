@@ -1,0 +1,147 @@
+---
+// Sticky light header: logo to #top, 4 anchors, main number as text, UK / RU (RU is a future page). R-UX-6.
+import FutureLink from "./FutureLink.astro";
+import IconPhone from "./IconPhone.astro";
+import { brand, phones, mainPhone, hours, futureNote } from "../data/site";
+const logo = `${import.meta.env.BASE_URL.replace(/\/?$/, "/")}logo.png`;
+const nav = [
+  { href: "#diagnostics", label: "Діагностика" },
+  { href: "#repair", label: "Ремонт і ТО" },
+  { href: "#parts", label: "Запчастини" },
+  { href: "#locations", label: "Адреси" },
+];
+---
+<header class="hdr">
+  <div class="container hdr__in">
+    <a class="hdr__logo" href="#top" aria-label={`${brand.name}, на початок сторінки`}>
+      <img src={logo} alt="" width="106" height="40" decoding="async" />
+    </a>
+
+    <nav class="hdr__nav" aria-label="Розділи сторінки" data-rec="R-UX-6">
+      <ul role="list">
+        {nav.map((n) => <li><a class="hdr__link" href={n.href}>{n.label}</a></li>)}
+      </ul>
+    </nav>
+
+    <div class="hdr__end">
+      <a class="hdr__phone" href={`tel:${mainPhone.tel}`}>
+        <IconPhone size={18} />
+        <span>{mainPhone.display}</span>
+      </a>
+      <div class="lang" data-rec="R-UX-6">
+        <span class="lang__cur" aria-current="true" lang="uk">UK</span>
+        <span class="lang__sep" aria-hidden="true">/</span>
+        <FutureLink note={futureNote} class="lang__ru future-link--end"><span lang="ru">RU</span></FutureLink>
+      </div>
+
+      <a class="hdr__call" href={`tel:${mainPhone.tel}`} aria-label={`Подзвонити ${mainPhone.display}`}>
+        <IconPhone size={22} />
+      </a>
+      <details class="menu" data-dismiss>
+        <summary class="menu__btn" aria-label="Меню">
+          <span class="menu__bars" aria-hidden="true"><span></span><span></span><span></span></span>
+        </summary>
+        <div class="menu__panel">
+          <nav aria-label="Розділи сторінки, мобільне меню">
+            <ul class="menu__nav" role="list">
+              {nav.map((n) => <li><a class="menu__link" href={n.href}>{n.label}</a></li>)}
+            </ul>
+          </nav>
+          <p class="menu__title">Подзвонити й записатись</p>
+          <ul class="menu__phones" role="list" data-rec="R-UX-2">
+            {phones.map((p) => (
+              <li><a class="menu__phone" href={`tel:${p.tel}`}><span class="menu__num">{p.display}</span><span class="menu__op">{p.operator}</span></a></li>
+            ))}
+          </ul>
+          <p class="menu__hours">{hours.work}, {hours.calls}</p>
+          <div class="menu__lang">
+            <span aria-current="true">Українська</span>
+            <FutureLink note={futureNote}><span lang="ru">Русский</span></FutureLink>
+          </div>
+        </div>
+      </details>
+    </div>
+  </div>
+</header>
+
+<style>
+  .hdr { position: sticky; top: 0; z-index: 50; background: var(--color-bg); border-bottom: 1px solid var(--color-hairline); }
+  .hdr__in { display: flex; align-items: center; gap: var(--space-5); height: var(--header-h); }
+  .hdr__logo { display: inline-flex; flex: none; border-radius: var(--radius); }
+  .hdr__logo img { width: 106px; height: 40px; transition: opacity var(--dur-hover) var(--ease-out); }
+  .hdr__logo:hover img { opacity: .88; }
+  .hdr__logo:active img { transform: translateY(1px); }
+  .hdr__nav { display: none; }
+  .hdr__nav ul { display: flex; gap: var(--space-1); margin: 0; padding: 0; list-style: none; }
+  .hdr__link {
+    display: inline-flex; align-items: center; min-height: var(--tap); padding: 0 var(--space-3);
+    font-weight: 600; font-size: var(--fs-small); text-decoration: none; border-radius: var(--radius);
+    text-underline-offset: 6px; text-decoration-thickness: 2px;
+    transition: color var(--dur-hover) var(--ease-out);
+  }
+  .hdr__link:hover { color: var(--color-accent); text-decoration-line: underline; }
+  .hdr__link:active { color: var(--color-accent-hover); }
+  .hdr__end { display: flex; align-items: center; gap: var(--space-2); margin-left: auto; }
+  .hdr__phone { display: none; }
+  .lang { display: none; }
+  .hdr__call, .menu__btn {
+    display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px;
+    border-radius: var(--radius); color: var(--color-text);
+    transition: background-color var(--dur-hover) var(--ease-out), color var(--dur-hover) var(--ease-out);
+  }
+  .hdr__call { background: var(--color-accent); color: var(--color-accent-ink); }
+  .hdr__call:hover { background: var(--color-accent-hover); }
+  .hdr__call:active, .menu__btn:active { transform: translateY(1px); }
+  .menu__btn { list-style: none; cursor: pointer; border: var(--border) solid var(--color-text); }
+  .menu__btn::-webkit-details-marker { display: none; }
+  .menu__btn:hover { background: var(--color-surface-2); }
+  .menu__bars { display: grid; gap: var(--space-1); width: 20px; }
+  .menu__bars span { display: block; height: 2px; background: currentColor; transition: transform var(--dur-hover) var(--ease-out), opacity var(--dur-hover) var(--ease-out); }
+  .menu[open] .menu__bars span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+  .menu[open] .menu__bars span:nth-child(2) { opacity: 0; }
+  .menu[open] .menu__bars span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+  .menu__panel {
+    position: absolute; left: 0; right: 0; top: 100%;
+    max-height: calc(100dvh - var(--header-h)); overflow-y: auto;
+    padding: var(--space-4) var(--space) var(--space-6);
+    background: var(--color-surface);
+    box-shadow: 0 12px 32px var(--color-shadow);
+  }
+  .menu:not([open]) .menu__panel { display: none; }
+  .menu[open] .menu__panel { animation: menu-in var(--dur-hover) var(--ease-out); }
+  @keyframes menu-in { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+  .menu__nav, .menu__phones { margin: 0; padding: 0; list-style: none; }
+  .menu__link {
+    display: flex; align-items: center; min-height: 56px; border-bottom: 1px solid var(--color-surface-2);
+    font-family: var(--font-display); font-weight: 800; font-size: var(--fs-h3); line-height: 1; text-decoration: none;
+  }
+  .menu__link:hover, .menu__phone:hover { color: var(--color-accent); }
+  .menu__link:active, .menu__phone:active { color: var(--color-accent-hover); }
+  .menu__title { margin: var(--space-5) 0 var(--space-2); font-weight: 600; color: var(--color-muted); font-size: var(--fs-small); }
+  .menu__phone { display: flex; justify-content: space-between; align-items: baseline; gap: var(--space-4); min-height: var(--tap); padding: var(--space-2) 0; text-decoration: none; }
+  .menu__num { font-family: var(--font-display); font-weight: 800; font-size: var(--fs-lead); font-variant-numeric: tabular-nums; }
+  .menu__op { font-size: var(--fs-small); color: var(--color-muted); }
+  .menu__hours { margin: var(--space-3) 0 0; font-size: var(--fs-small); color: var(--color-muted); }
+  .menu__lang .future-link__note { left: 0; transform: none; }
+  .menu__lang { display: flex; gap: var(--space-5); margin-top: var(--space-5); font-size: var(--fs-small); font-weight: 600; }
+
+  @media (min-width: 64em) {
+    .hdr__nav { display: block; margin-left: var(--space-5); }
+    .hdr__phone {
+      display: inline-flex; align-items: center; gap: var(--space-2); min-height: var(--tap); padding: 0 var(--space-3);
+      font-family: var(--font-display); font-weight: 800; font-size: var(--fs-lead); line-height: 1;
+      font-variant-numeric: tabular-nums; text-decoration: none; border-radius: var(--radius);
+      transition: color var(--dur-hover) var(--ease-out);
+    }
+    .hdr__phone .icon { color: var(--color-accent); }
+    .hdr__phone:hover { color: var(--color-accent); }
+    .hdr__phone:active { color: var(--color-accent-hover); }
+    .lang { display: inline-flex; align-items: center; gap: var(--space-1); font-size: var(--fs-small); font-weight: 600; padding-left: var(--space-2); }
+    .lang__sep { color: var(--color-muted); }
+    .hdr__call, .menu { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .menu[open] .menu__panel { animation: none; }
+    .menu__bars span { transition: none; }
+  }
+</style>

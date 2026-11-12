@@ -1,0 +1,37 @@
+---
+// Phone only: a bottom bar «Подзвонити · Маршрут» after the first screen. Body gets padding so nothing is covered. R-UX-2.
+import IconPhone from "./IconPhone.astro";
+import { mainPhone } from "../data/site";
+---
+<nav class="callbar" data-callbar aria-label="Швидкий зв’язок" data-rec="R-UX-2">
+  <a class="callbar__btn callbar__btn--call" href={`tel:${mainPhone.tel}`}><IconPhone size={18} /><span>Подзвонити</span></a>
+  <a class="callbar__btn" href="#locations">Маршрут</a>
+</nav>
+
+<style>
+  .callbar { display: none; }
+  @media (max-width: 63.99em) {
+    :global(body) { padding-bottom: 72px; }
+    .callbar {
+      position: fixed; z-index: 40; left: 0; right: 0; bottom: 0;
+      display: grid; grid-template-columns: 1.4fr 1fr; gap: var(--space-2);
+      padding: var(--space-2) var(--space) calc(var(--space-2) + env(safe-area-inset-bottom));
+      background: var(--color-bg); border-top: 1px solid var(--color-hairline);
+      transition: transform var(--dur-hover) var(--ease-out);
+    }
+    :global(.has-callbar) .callbar:not(.is-shown) { transform: translateY(110%); }
+  }
+  .callbar__btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
+    min-height: var(--tap); border-radius: var(--radius); font-weight: 600; text-decoration: none;
+    border: var(--border) solid var(--color-text); color: var(--color-text);
+    transition: background-color var(--dur-hover) var(--ease-out), color var(--dur-hover) var(--ease-out);
+  }
+  .callbar__btn:hover { background: var(--color-surface-2); }
+  .callbar__btn--call { background: var(--color-accent); border-color: var(--color-accent); color: var(--color-accent-ink); }
+  .callbar__btn--call:hover { background: var(--color-accent-hover); }
+  .callbar__btn:active { transform: translateY(1px); }
+  @media (prefers-reduced-motion: reduce) {
+    .callbar { transition: none; }
+  }
+</style>

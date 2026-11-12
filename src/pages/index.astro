@@ -1,0 +1,48 @@
+---
+// Homepage DEMO of «Євро Авто Сервіс» from design/concept.md (veon-concept). Only this page exists.
+import Base from "../layouts/Base.astro";
+import Header from "../components/Header.astro";
+import Hero from "../components/Hero.astro";
+import Tasks from "../components/Tasks.astro";
+import Diagnostics from "../components/Diagnostics.astro";
+import Repair from "../components/Repair.astro";
+import Parts from "../components/Parts.astro";
+import Booking from "../components/Booking.astro";
+import Locations from "../components/Locations.astro";
+import Footer from "../components/Footer.astro";
+import CallBar from "../components/CallBar.astro";
+import sofiaCyr from "../assets/fonts/sofia-800-cyrillic.woff2?url";
+import { brand, phones, locations } from "../data/site";
+
+const h1 = "СТО і запчастини для іномарок на Оболоні та Дарниці";
+const title = "СТО та запчастини на Оболоні й Дарниці — Євро Авто Сервіс";
+const description = "Ремонт і діагностика іномарок, підбір запчастин і масел. Діагностика від 150 грн, гарантія 20 000 км або 6 місяців. Дзвінки щодня до 22:00.";
+
+const jsonLd = locations.map((l) => ({
+  "@context": "https://schema.org",
+  "@type": "AutoRepair",
+  name: `${brand.name}, ${l.district}`,
+  telephone: phones.map((p) => p.tel),
+  address: { "@type": "PostalAddress", streetAddress: l.street, addressLocality: "Київ", addressCountry: "UA" },
+  openingHours: "Mo-Su 09:00-19:00",
+  hasMap: l.map,
+}));
+---
+<Base lang="uk" title={title} description={description}>
+  <Fragment slot="head">
+    <link rel="preload" href={sofiaCyr} as="font" type="font/woff2" crossorigin />
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  </Fragment>
+  <Header slot="header" />
+  <Hero h1={h1} />
+  <Tasks />
+  <Diagnostics />
+  <Repair />
+  <Parts />
+  <Booking />
+  <Locations />
+  <Fragment slot="footer">
+    <Footer />
+    <CallBar />
+  </Fragment>
+</Base>

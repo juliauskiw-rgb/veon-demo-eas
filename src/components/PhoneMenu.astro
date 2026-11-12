@@ -1,0 +1,56 @@
+---
+// «Інші номери»: a disclosure with all four tel: numbers and operator labels (R-UX-2).
+// <details> works without JS and from the keyboard; site.ts adds Esc and click-outside closing.
+import { phones } from "../data/site";
+interface Props { label?: string; class?: string; }
+const { label = "Інші номери", class: cls } = Astro.props;
+---
+<details class:list={["phones", cls]} data-dismiss data-rec="R-UX-2">
+  <summary class="btn btn--outline phones__toggle">
+    <span>{label}</span>
+    <svg class="phones__chev" width="14" height="14" viewBox="0 0 14 14" aria-hidden="true" focusable="false"><path d="M3 5l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+  </summary>
+  <ul class="phones__list" role="list">
+    {phones.map((p) => (
+      <li>
+        <a class="phones__item" href={`tel:${p.tel}`}>
+          <span class="phones__num">{p.display}</span>
+          <span class="phones__op">{p.operator}</span>
+        </a>
+      </li>
+    ))}
+  </ul>
+</details>
+
+<style>
+  /* The list is placed against the nearest positioned ancestor (the action row), so it never runs past the screen. */
+  .phones { position: static; }
+  .phones:not([open]) .phones__list { display: none; }
+  .phones__toggle { list-style: none; width: 100%; }
+  .phones__toggle::-webkit-details-marker { display: none; }
+  .phones__chev { transition: transform var(--dur-hover) var(--ease-out); }
+  .phones[open] .phones__chev { transform: rotate(180deg); }
+  .phones__list {
+    position: absolute; z-index: 30; left: 0; right: 0; top: calc(100% + var(--space-2));
+    margin: 0; padding: var(--space-2); list-style: none;
+    background: var(--color-surface); color: var(--color-text);
+    border-radius: var(--radius); box-shadow: 0 12px 32px var(--color-shadow);
+  }
+  .phones[open] .phones__list { animation: phones-in var(--dur-hover) var(--ease-out); }
+  @keyframes phones-in { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+  .phones__item {
+    display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-4);
+    min-height: var(--tap); padding: var(--space-3) var(--space-3);
+    text-decoration: none; border-radius: var(--radius);
+    transition: background-color var(--dur-hover) var(--ease-out), color var(--dur-hover) var(--ease-out);
+  }
+  .phones__num { font-family: var(--font-display); font-weight: 800; font-size: var(--fs-lead); line-height: 1; font-variant-numeric: tabular-nums; }
+  .phones__op { font-size: var(--fs-small); color: var(--color-muted); }
+  .phones__item:hover { background: var(--color-bg); color: var(--color-accent); }
+  .phones__item:active { background: var(--color-surface-2); }
+  .phones__item:focus-visible { outline: 2px solid var(--color-accent); outline-offset: -2px; }
+  @media (prefers-reduced-motion: reduce) {
+    .phones[open] .phones__list { animation: none; }
+    .phones__chev { transition: none; }
+  }
+</style>

@@ -1,0 +1,52 @@
+/* Shared client styles: type, buttons, fields, FutureLink skin. Values come from tokens.css only. */
+html { font-synthesis: none; overflow-x: clip; scrollbar-color: var(--color-muted) var(--color-surface-2); }
+body { overflow-x: clip; }
+::selection { background: var(--color-accent); color: var(--color-accent-ink); }
+body { font-size: var(--fs-body); }
+h1, h2, h3 { margin: 0; font-family: var(--font-display); font-weight: 800; line-height: var(--lh-display); letter-spacing: -0.01em; overflow-wrap: break-word; min-width: 0; }
+.h2 { font-size: var(--fs-h2); max-width: 18ch; text-wrap: balance; }
+.lead { font-size: var(--fs-lead); line-height: 1.4; max-width: 46ch; }
+.muted { color: var(--color-muted); }
+.num { font-variant-numeric: tabular-nums; }
+.section { padding-block: var(--section-y); }
+
+/* Coloured fields (committed posture) */
+.field-dark { background: var(--color-dark); color: var(--color-on-dark); }
+.field-accent { background: var(--color-accent); color: var(--color-on-accent); }
+.field-dark :focus-visible, .field-accent :focus-visible { outline-color: var(--color-on-accent); }
+
+/* Buttons: one filled per screen, the rest outline */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
+  min-height: var(--tap); padding: 0 var(--space-5);
+  font: 600 var(--fs-body)/1.2 var(--font-body); text-decoration: none; text-align: center;
+  border: var(--border) solid transparent; border-radius: var(--radius); cursor: pointer;
+  transition: background-color var(--dur-hover) var(--ease-out), color var(--dur-hover) var(--ease-out), border-color var(--dur-hover) var(--ease-out);
+}
+.btn:active { transform: translateY(1px); transition-duration: var(--dur-press); }
+.btn--primary { background: var(--color-accent); color: var(--color-accent-ink); }
+.btn--primary:hover { background: var(--color-accent-hover); }
+.btn--outline { border-color: var(--color-text); color: var(--color-text); background: transparent; }
+.btn--outline:hover { background: var(--color-surface-2); }
+.btn--light { border-color: var(--color-on-dark); color: var(--color-on-dark); background: transparent; }
+.btn--light:hover { background: var(--color-on-dark); color: var(--color-dark); }
+
+/* FutureLink skin: quiet, readable (AA), clearly not a live link */
+.future-link {
+  gap: var(--space-2); color: var(--color-muted);
+  text-decoration: underline dotted; text-decoration-thickness: 1.5px; text-underline-offset: 4px;
+}
+.future-link:active { color: var(--color-text); }
+.future-link__note[aria-hidden="true"] { font-family: var(--font-body); font-weight: 600; text-decoration: none; }
+.future-link:hover .future-link__note { transition-delay: 800ms; }
+.future-link--end .future-link__note[aria-hidden="true"] { left: auto; right: 0; transform: translateY(-4px); }
+.future-link--end:hover .future-link__note[aria-hidden="true"], .future-link--end.is-tapped .future-link__note[aria-hidden="true"], .future-link--end:focus-visible .future-link__note[aria-hidden="true"] { transform: none; }
+.future-link:focus-visible .future-link__note, .future-link.is-tapped .future-link__note { transition-delay: 0ms; }
+.field-dark .future-link { color: var(--color-on-dark-muted); }
+.field-accent .future-link { color: var(--color-on-accent-muted); }
+.field-dark .future-link__note[aria-hidden="true"], .field-accent .future-link__note[aria-hidden="true"] { background: var(--color-surface); color: var(--color-text); }
+
+@media (prefers-reduced-motion: reduce) {
+  .btn:active { transform: none; }
+  .future-link__note[aria-hidden="true"] { transform: translate(-50%, 0); }
+}

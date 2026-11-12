@@ -1,0 +1,106 @@
+---
+// First screen: H1, the main number as the biggest line of the site (one tel: plate), other numbers, route, hours, live status. R-UX-1, R-UX-2.
+import PhoneMenu from "./PhoneMenu.astro";
+import { mainPhone, hours, locations } from "../data/site";
+interface Props { h1: string; }
+const { h1 } = Astro.props;
+---
+<section id="hero" class="hero" data-rec="R-UX-1" aria-labelledby="hero-title">
+  <div class="container hero__grid">
+    <div class="hero__head">
+      <h1 id="hero-title" class="hero__title">{h1}</h1>
+      <p class="hero__sub">Гарантія 20&nbsp;000&nbsp;км або 6&nbsp;місяців на всі види робіт</p>
+    </div>
+
+    <a class="plate" href={`tel:${mainPhone.tel}`} data-rec="R-UX-1,R-UX-2,G-R001,M-R003">
+      <span class="plate__label">Подзвонити й записатись</span>
+      <span class="plate__num">{mainPhone.display}</span>
+    </a>
+
+    <div class="hero__aside">
+      <p class="status" data-status hidden></p>
+      <p class="hero__hours">
+        <span class="hero__hours-main">{hours.work}</span>
+        <span class="muted">{hours.calls}</span>
+      </p>
+      <p class="hero__addr">
+        <a class="hero__addr-link" href="#locations">
+          {locations.map((l) => <span><b>{l.district}</b>, {l.street}</span>)}
+        </a>
+      </p>
+      <div class="hero__actions">
+        <PhoneMenu />
+        <a class="btn btn--outline" href="#locations">Як доїхати</a>
+      </div>
+    </div>
+  </div>
+
+  <p class="strip">
+    <span class="container strip__in">Працюємо при відключеннях — електрика є завжди</span>
+  </p>
+</section>
+
+<style>
+  .hero { padding-top: var(--space-6); }
+  .hero__grid { display: grid; gap: var(--space-5); padding-bottom: var(--space-6); }
+  .hero__title { font-size: var(--fs-h1); max-width: 17ch; }
+  .hero__sub { margin: var(--space-4) 0 0; font-size: var(--fs-body); color: var(--color-muted); }
+
+  .plate {
+    display: grid; gap: var(--space-2); align-content: center;
+    min-height: 88px; padding: var(--space-4) var(--space-5);
+    background: var(--color-accent); color: var(--color-accent-ink);
+    text-decoration: none; border-radius: var(--radius);
+    transition: background-color var(--dur-hover) var(--ease-out);
+  }
+  .plate:hover { background: var(--color-accent-hover); }
+  .plate:active { transform: translateY(1px); }
+  .plate__label { font-weight: 600; font-size: var(--fs-small); color: var(--color-on-accent-muted); }
+  .plate__num {
+    font-family: var(--font-display); font-weight: 800; font-size: var(--fs-phone);
+    line-height: .9; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; white-space: nowrap;
+  }
+
+  .hero__aside { display: grid; gap: var(--space-4); align-content: start; }
+  .status { margin: 0; display: inline-flex; align-items: center; gap: var(--space-2); font-weight: 600; }
+  .status::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--color-muted); flex: none; }
+  .status[data-state="open"]::before { background: var(--color-accent); }
+  .hero__hours { margin: 0; display: grid; gap: var(--space-1); font-size: var(--fs-small); }
+  .hero__hours-main { font-weight: 600; font-size: var(--fs-body); }
+  .hero__addr { margin: 0; font-size: var(--fs-small); line-height: 1.35; }
+  .hero__addr-link { display: grid; gap: var(--space-1); color: var(--color-text); text-decoration: underline; text-decoration-color: var(--color-hairline); text-underline-offset: 3px; text-decoration-thickness: 1.5px; }
+  .hero__addr-link:hover { color: var(--color-accent); text-decoration-color: currentColor; }
+  .hero__addr-link:active { color: var(--color-accent-hover); }
+  .hero__addr-link b { font-weight: 600; }
+  .hero__actions { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); }
+  .hero__actions :global(.btn) { padding-inline: var(--space-2); font-size: var(--fs-small); white-space: nowrap; }
+
+  .strip { margin: 0; background: var(--color-dark); color: var(--color-on-dark); }
+  .strip__in { display: flex; align-items: center; min-height: 56px; padding-block: var(--space-3); font-weight: 600; }
+
+  /* Effect 1: the number plate opens left to right once; text inside is part of the plate */
+  @media (prefers-reduced-motion: no-preference) {
+    .plate { animation: plate-open 350ms var(--ease-out) both; }
+    @keyframes plate-open { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+  }
+
+  @media (min-width: 48em) {
+    .hero { padding-top: var(--space-7); }
+    .hero__actions { grid-template-columns: repeat(2, max-content); }
+  }
+  @media (min-width: 64em) {
+    .hero__grid {
+      grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gutter); row-gap: var(--space-6);
+      padding-bottom: var(--space-7);
+    }
+    .hero__head { grid-column: 1 / span 9; }
+    .hero__title { max-width: none; }
+    .hero__actions :global(.btn) { font-size: var(--fs-body); padding-inline: var(--space-5); }
+    .hero__sub { font-size: var(--fs-lead); }
+    .plate { grid-column: 1 / span 9; min-height: 200px; padding: var(--space-5) var(--space-6); }
+    .plate__label { font-size: var(--fs-lead); }
+    .hero__aside { grid-column: 10 / span 3; align-self: stretch; align-content: space-between; }
+    .hero__actions { grid-template-columns: 1fr; }
+    .plate { animation-duration: 450ms; }
+  }
+</style>

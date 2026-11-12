@@ -1,0 +1,46 @@
+---
+// Task index docked to the first screen: five large anchor links, each with its real price or guarantee. R-UX-3.
+const tasks = [
+  { href: "#diagnostics", name: "Діагностика", meta: "від 150 грн" },
+  { href: "#repair", name: "Ремонт вузлів", meta: "гарантія 20 000 км" },
+  { href: "#repair", name: "ТО і заміна рідин", meta: "масла й фільтри" },
+  { href: "#parts", name: "Запчастини та масла", meta: "від 50 грн" },
+  { href: "#pre-purchase", name: "Перевірка перед покупкою", meta: "від 500 грн" },
+];
+---
+<section id="tasks" class="tasks" data-rec="R-UX-3" aria-labelledby="tasks-title">
+  <div class="container">
+    <h2 id="tasks-title" class="tasks__title">З чим звертаєтесь</h2>
+    <ul class="tasks__list" role="list">
+      {tasks.map((t) => (
+        <li>
+          <a class="tasks__link" href={t.href}>
+            <span class="tasks__name">{t.name}</span>
+            <span class="tasks__meta">{t.meta}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .tasks { padding-block: var(--space-6); }
+  .tasks__title { font-family: var(--font-body); font-weight: 600; font-size: var(--fs-body); letter-spacing: 0; color: var(--color-muted); margin-bottom: var(--space-4); }
+  .tasks__list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-2) var(--space-4); margin: 0; padding: 0; list-style: none; }
+  .tasks__list li:last-child { grid-column: 1 / -1; }
+  .tasks__link {
+    display: grid; align-content: start; gap: var(--space-1); min-height: 56px; height: 100%;
+    padding: var(--space-3) 0 var(--space-4); border-top: 2px solid var(--color-text);
+    text-decoration: none; transition: color var(--dur-hover) var(--ease-out), border-color var(--dur-hover) var(--ease-out);
+  }
+  .tasks__name { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.375rem, 1rem + 1.4vw, 2.25rem); line-height: 1; }
+  .tasks__meta { font-size: var(--fs-small); color: var(--color-muted); font-variant-numeric: tabular-nums; }
+  .tasks__link:hover { color: var(--color-accent); border-color: var(--color-accent); }
+  .tasks__link:active { color: var(--color-accent-hover); }
+  @media (min-width: 64em) {
+    .tasks__list { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: var(--gutter); }
+    .tasks__list li:last-child { grid-column: auto; }
+    .tasks__meta { font-size: var(--fs-body); }
+  }
+</style>
